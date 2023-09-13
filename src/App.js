@@ -5,15 +5,15 @@ import { Route, Routes } from 'react-router-dom';
 import Home from './Home';
 
 function App() {
-  const [catageries, setCatagories] = useState([])
+  const [categories, setCategories] = useState([])
 
 
   useEffect(()=>{
-
     try {
       const getChuck = async()=>{
-        const catagoryData = await axios.get("https://api.chucknorris.io/jokes/categories")
-        setCatagories(catagoryData.data)
+        const categoryData = await axios.get("https://api.chucknorris.io/jokes/categories")
+        setCategories(categoryData.data.filter(el=> el !== "explicit" ? el : null))
+        // console.log(categories)
       }
       getChuck()
     } catch (error) {
@@ -28,8 +28,8 @@ function App() {
       </div>
       <hr/>
       <Routes>
-        <Route path='/' element={<Home categories={catageries}/>} />
-        <Route path='/:id' element={<Home categories={catageries}/>} />
+        <Route path='/' element={<Home categories={categories}/>} />
+        <Route path='/:id' element={<Home categories={categories}/>} />
       </Routes>
 
     </div>
