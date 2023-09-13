@@ -1,23 +1,41 @@
-import logo from './logo.svg';
+import { useEffect , useState} from 'react';
+import axios from 'axios';
 import './App.css';
+import { Route, Routes } from 'react-router-dom';
+import Home from './Home';
+import Joke from './Joke';
 
 function App() {
+  const [catageries, setCatagories] = useState([])
+  
+  useEffect(()=>{
+    
+    try {
+      const getChuck = async()=>{
+        const catagoryData = await axios.get("https://api.chucknorris.io/jokes/categories")
+        setCatagories(catagoryData.data)
+      }
+      getChuck()
+    } catch (error) {
+      console.log(error.message)
+    }
+  },[])
+  
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div id="chuckHero">
+        <h1>YO, Get ready to laugh HAHAHAH</h1>
+        
+      </div>
+      
+      <hr/>
+      
+      
+      <Routes>
+        <Route path='/' element={<Home categories={catageries}/>} />
+        <Route path='/:id' element={<Joke />} />
+      </Routes>
+      
     </div>
   );
 }
