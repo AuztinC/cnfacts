@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
 import axios from 'axios'
 
-const Joke = ()=>{
+const Joke = ({ id })=>{
 	const chuckPix = [
 	  "https://images01.military.com/sites/default/files/styles/full/public/2021-04/chucknorris.jpeg.jpg",
 	  "https://s3.amazonaws.com/pastperfectonline/images/museum_1141/people/norris_chuck.jpg",
@@ -10,43 +9,44 @@ const Joke = ()=>{
 	  "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Chuck_Norris%2C_The_Delta_Force_1986.jpg/800px-Chuck_Norris%2C_The_Delta_Force_1986.jpg"
 	]
 	const randomPic = chuckPix[ Math.floor(Math.random() * (chuckPix.length-1)) ]
-	const id = useParams().id
 	const [joke, setJoke] = useState("")
 	const [gifEnd, setGifEnd] = useState(false)
-	
+
 	useEffect(()=>{
-	  newJoke()
-	},[])
-	
+		newJoke()
+		setGifEnd(false)
+		setTimeout(()=>{setGifEnd(true)}, 1100);
+	},[ id ])
+
 	async function newJoke() {
-	  try {
-		const getJoke = async()=>{
-		  const jokeData = await axios.get(`https://api.chucknorris.io/jokes/random?category=${id}`)
-		  setJoke(jokeData.data.value)
-		  // console.log(jokeData)
+		if(id){
+			try {
+				const getJoke = async()=>{
+				const jokeData = await axios.get(`https://api.chucknorris.io/jokes/random?category=${id}`)
+				setJoke(jokeData.data.value)
+				}
+				getJoke()
+			} catch (error) {
+				console.log(error.message)
+			}
 		}
-		getJoke()
-	  } catch (error) {
-		console.log(error.message)
-	  }
 	}
-	
-	
-	setTimeout(()=>{setGifEnd(true)}, 1100);
-	
+
+	if(!id){
+		return null
+	}
 	return (
-		<div>
+		<div className="jokeDiv">
 		  {
-			  !gifEnd ? <img src='https://i.giphy.com/media/BIuuwHRNKs15C/giphy.webp' /> 
-			  : 
+			  !gifEnd ? <img src='https://i.giphy.com/media/BIuuwHRNKs15C/giphy.webp' alt=""/>
+			  :
 			<>
-				<Link to="/">Back to all categories</Link>
 				<br/>
-				<h3>{ id.toUpperCase() }</h3>
+				<h2>{ id.toUpperCase() }</h2>
 				<br/>
 				<img src={randomPic} alt="dangit"/>
-				<h4>{joke}</h4>
-				<button onClick={()=>newJoke()}>New Joke</button>
+				<h2>{joke}</h2>
+				<button onClick={()=>{newJoke()}}>New Joke</button>
 			</>
 		  }
 	  </div>
