@@ -3,16 +3,19 @@ import Joke from "./Joke"
 
 const Home = ({ categories })=>{
 	const navigate = useNavigate()
+	let randomCat = null
+	randomCat = categories[Math.round(Math.random() * (categories.length-1))]
     const id = useParams().id
-    let randomCat = null
-    if(categories){
-        randomCat = categories[Math.round(Math.random() * (categories.length-1))]
-    }
 
-	if(!randomCat){
+	if(id === undefined){
+		navigate(`/${randomCat}`)
+		console.log(randomCat)
+	}
+
+	const selected = categories.find(cat=>cat === id)
+	if(!selected){
 		return null
 	}
-	const selected = categories.find(cat=>cat === id)
 	return (
 	<>
 		{ id ? <Joke id={id}/> : null }
